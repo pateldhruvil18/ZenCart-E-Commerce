@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" fill="none">
+  <!-- Background circle for visibility on any bg -->
+  <circle cx="110" cy="110" r="105" fill="#111827"/>
+
+  <!-- Orbit swoosh ring -->
+  <ellipse cx="112" cy="148" rx="78" ry="18" stroke="white" stroke-width="4.5" fill="none" stroke-linecap="round" opacity="0.85"/>
+
+  <!-- Cart body -->
+  <rect x="64" y="112" width="88" height="44" rx="8" fill="white"/>
+
+  <!-- Cart stripe highlights -->
+  <line x1="81" y1="120" x2="81" y2="148" stroke="#374151" stroke-width="3" stroke-linecap="round" opacity="0.25"/>
+  <line x1="97" y1="120" x2="97" y2="148" stroke="#374151" stroke-width="3" stroke-linecap="round" opacity="0.25"/>
+  <line x1="113" y1="120" x2="113" y2="148" stroke="#374151" stroke-width="3" stroke-linecap="round" opacity="0.25"/>
+  <line x1="129" y1="120" x2="129" y2="148" stroke="#374151" stroke-width="3" stroke-linecap="round" opacity="0.25"/>
+
+  <!-- Cart handle -->
+  <path d="M64 122 Q50 122 48 108 L44 88" stroke="white" stroke-width="6" stroke-linecap="round" fill="none"/>
+
+  <!-- Price tag -->
+  <rect x="33" y="85" width="20" height="26" rx="4" fill="white" transform="rotate(-18 33 85)"/>
+  <circle cx="40" cy="89" r="3" fill="#111827"/>
+  <line x1="36" y1="97" x2="46" y2="95" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="36" y1="102" x2="46" y2="100" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Cart wheels -->
+  <circle cx="83" cy="166" r="11" fill="white"/>
+  <circle cx="83" cy="166" r="5" fill="#374151"/>
+  <circle cx="129" cy="166" r="11" fill="white"/>
+  <circle cx="129" cy="166" r="5" fill="#374151"/>
+
+  <!-- Zen stones (bottom large) -->
+  <ellipse cx="120" cy="114" rx="25" ry="9" fill="#d1d5db"/>
+  <!-- Middle stone -->
+  <ellipse cx="120" cy="105" rx="19" ry="8" fill="#e5e7eb"/>
+  <!-- Top stone -->
+  <ellipse cx="120" cy="97" rx="13" ry="6" fill="#f3f4f6"/>
+
+  <!-- Lotus petals (back) -->
+  <ellipse cx="105" cy="83" rx="6" ry="12" fill="#9ca3af" transform="rotate(-38 105 83)" opacity="0.9"/>
+  <ellipse cx="135" cy="83" rx="6" ry="12" fill="#9ca3af" transform="rotate(38 135 83)" opacity="0.9"/>
+
+  <!-- Lotus petals (front) -->
+  <ellipse cx="110" cy="76" rx="7" ry="13" fill="white" transform="rotate(-18 110 76)" opacity="0.95"/>
+  <ellipse cx="120" cy="73" rx="7" ry="14" fill="white" transform="rotate(0 120 73)" opacity="0.95"/>
+  <ellipse cx="130" cy="76" rx="7" ry="13" fill="white" transform="rotate(18 130 76)" opacity="0.95"/>
+
+  <!-- Lotus center -->
+  <circle cx="120" cy="80" r="6" fill="#fbbf24"/>
+  <circle cx="120" cy="80" r="3" fill="#f59e0b"/>
+
+  <!-- Ground shadow -->
+  <ellipse cx="112" cy="177" rx="52" ry="6" fill="white" opacity="0.08"/>
+</svg>
