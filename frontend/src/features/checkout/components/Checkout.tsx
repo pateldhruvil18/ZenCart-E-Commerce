@@ -39,15 +39,15 @@ export const Checkout = () => {
     };
   }, []);
 
-  const searchParams = useSearch({ from: '/protected/checkout' });
-  const directProductId = searchParams.productId;
-  const directQuantity = searchParams.quantity || 1;
+  const searchParams = useSearch({ from: '/auth-layout/checkout' as any });
+  const directProductId = searchParams.productId as string | undefined;
+  const directQuantity = (searchParams.quantity as number) || 1;
 
   const { data: directProductData, isLoading: isDirectProductLoading } = useProductDetails(directProductId as string);
   const directProduct = directProductData?.data?.product;
 
   useEffect(() => {
-    if (addresses?.length > 0 && !selectedAddressId) {
+    if (addresses && addresses.length > 0 && !selectedAddressId) {
       setSelectedAddressId(addresses[0]._id);
     }
   }, [addresses, selectedAddressId]);

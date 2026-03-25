@@ -7,7 +7,6 @@ import {
   Package, 
   Star, 
   ChevronLeft, 
-  ShieldCheck, 
   UserX, 
   UserCheck,
   Clock
@@ -40,6 +39,7 @@ export const UserDetail = () => {
   };
 
   const handleRoleToggle = () => {
+    if (!user) return;
     const newRole = user.role === 'admin' ? 'user' : 'admin';
     updateUser.mutate({ id: user._id, data: { role: newRole } }, {
        onSuccess: () => toast.success(`User role updated to ${newRole}`)

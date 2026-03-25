@@ -11,7 +11,7 @@ export const CartProvider = () => {
   if (isLoading) return <div className="p-8 text-center animate-pulse">Loading Cart...</div>;
 
   const items = cart?.items || [];
-  const total = items.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0);
+  const total = items.reduce((sum: number, item: any) => sum + (item.price || item.product?.price || 0) * item.quantity, 0);
 
   if (items.length === 0) {
     return (
@@ -44,7 +44,7 @@ export const CartProvider = () => {
                 />
               </Link>
               <div className="flex-1 space-y-1">
-                <Link to={`/products/$productId`} params={{ productId: item.product._id }} className="font-semibold text-lg hover:text-primary transition-colors line-clamp-1">
+                <Link to="/products/$productId" params={{ productId: item.product._id }} className="font-semibold text-lg hover:text-primary transition-colors line-clamp-1">
                   {item.product.name}
                 </Link>
                 <div className="text-muted-foreground text-sm">{item.product.category}</div>
