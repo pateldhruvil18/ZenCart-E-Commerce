@@ -129,18 +129,27 @@ const createReview = async (req, res) => {
     const existing = await Review.findOne({ product: product._id, user: req.user.id });
     if (existing) return handleError(res, buildErrorObject(409, 'You have already reviewed this product'));
 
+    if (!rating && (!comment || !comment.trim())) {
+      return handleError(res, buildErrorObject(400, 'Please provide either a rating or a comment'));
+    }
+
     const review = await Review.create({
       product: product._id,
       user: req.user.id,
       name: req.user.name || 'User',
-      rating: Number(rating),
-      comment,
+      rating: rating ? Number(rating) : 0,
+      comment: comment || '',
     });
 
-    // Recalculate product rating
+    // Recalculate product rating (Only count reviews that have a rating > 0)
     const allReviews = await Review.find({ product: product._id });
+    const ratedReviews = allReviews.filter(r => r.rating > 0);
+    
     product.numReviews = allReviews.length;
-    product.rating = allReviews.reduce((acc, r) => acc + r.rating, 0) / allReviews.length;
+    product.rating = ratedReviews.length > 0 
+      ? ratedReviews.reduce((acc, r) => acc + r.rating, 0) / ratedReviews.length 
+      : 0;
+    
     await product.save();
 
     return buildResponse(res, 201, review, 'Review added');

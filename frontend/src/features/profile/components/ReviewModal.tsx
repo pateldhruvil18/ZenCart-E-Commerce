@@ -21,8 +21,9 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose, produ
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (rating === 0) return toast.error('Please select a rating');
-    if (!comment.trim()) return toast.error('Please enter a comment');
+    if (rating === 0 && !comment.trim()) {
+      return toast.error('Please provide either a rating or a comment');
+    }
     
     createReview({ rating, comment }, {
       onSuccess: () => {
@@ -96,7 +97,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose, produ
 
             <button
               type="submit"
-              disabled={isReviewing || rating === 0 || !comment.trim()}
+              disabled={isReviewing || (rating === 0 && !comment.trim())}
               className="w-full h-12 bg-black text-white font-black uppercase text-[10px] tracking-widest rounded-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed"
             >
               {isReviewing ? 'Submitting...' : 'Post Verified Review'}
