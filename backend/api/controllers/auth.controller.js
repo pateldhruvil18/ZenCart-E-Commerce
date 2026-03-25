@@ -40,11 +40,13 @@ const register = async (req, res) => {
     );
 
     const html = await ejs.renderFile(templatePath('otp-verification.ejs'), { name, otp });
-    await sendMail(
+    
+    // Send mail in background to avoid request timeout on Render
+    sendMail(
       email,
       'Your OTP - E-Commerce Store Email Verification',
       html
-    );
+    ).catch(err => console.error('Registration email failed:', err.message));
 
     return buildResponse(res, 201,
       { id: user._id, email: user.email },
