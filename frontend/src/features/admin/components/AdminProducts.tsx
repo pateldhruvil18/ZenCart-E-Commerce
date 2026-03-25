@@ -201,7 +201,11 @@ export const AdminProducts = () => {
               </thead>
               <tbody className="divide-y divide-border/50">
                 {products.map((product: any) => (
-                  <tr key={product._id} className="hover:bg-slate-50 transition-colors group">
+                  <tr 
+                    key={product._id} 
+                    onClick={() => handleOpenModal(product)}
+                    className="hover:bg-slate-50 transition-colors group cursor-pointer"
+                  >
                     <td className="px-8 py-5 flex items-center gap-4">
                       <img
                         src={product.images?.[0] || 'https://via.placeholder.com/40'}
@@ -231,10 +235,16 @@ export const AdminProducts = () => {
                     </td>
                     <td className="px-8 py-5 text-right">
                       <div className="flex gap-1 justify-end">
-                        <button onClick={() => handleOpenModal(product)} className="p-2 hover:bg-black/5 text-black rounded-lg transition-colors border border-transparent hover:border-black/10">
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); handleOpenModal(product); }} 
+                          className="p-2 hover:bg-black/5 text-black rounded-lg transition-colors border border-transparent hover:border-black/10"
+                        >
                           <Edit2 className="w-4 h-4" />
                         </button>
-                        <button onClick={() => handleDelete(product._id)} className="p-2 hover:bg-red-50 text-red-600 rounded-lg transition-colors border border-transparent hover:border-red-200">
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); handleDelete(product._id); }} 
+                          className="p-2 hover:bg-red-50 text-red-600 rounded-lg transition-colors border border-transparent hover:border-red-200"
+                        >
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>

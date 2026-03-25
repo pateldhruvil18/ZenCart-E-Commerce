@@ -5,8 +5,16 @@ export const adminService = {
     const res = await axiosInstance.get('/admin/dashboard');
     return res;
   },
-  getUsers: async (page: number) => {
-    const res = await axiosInstance.get('/admin/users', { params: { page } });
+  getUsers: async (page: number, search?: string) => {
+    const res = await axiosInstance.get('/admin/users', { params: { page, search } });
+    return res;
+  },
+  getUserDetail: async (id: string) => {
+    const res = await axiosInstance.get(`/admin/users/${id}`);
+    return res;
+  },
+  updateUser: async ({ id, data }: { id: string; data: { role?: string; status?: string } }) => {
+    const res = await axiosInstance.patch(`/admin/users/${id}`, data);
     return res;
   },
   getAdminProducts: async (page: number, search?: string, productId?: string) => {

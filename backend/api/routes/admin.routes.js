@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getDashboard, getAllOrders, updateOrderStatus, deleteReview, getAllUsers, getAllProducts } = require('../controllers/admin.controller');
+const { getDashboard, getAllOrders, updateOrderStatus, deleteReview, getAllUsers, getAllProducts, getUserById, updateUser } = require('../controllers/admin.controller');
 const { createProduct, updateProduct, deleteProduct } = require('../controllers/product.controller');
 const { protect, adminOnly } = require('../middlewares/auth.middleware');
 
@@ -10,6 +10,8 @@ router.get('/orders', getAllOrders);
 router.patch('/orders/:id/status', updateOrderStatus);
 router.delete('/reviews/:id', deleteReview);
 router.get('/users', getAllUsers);
+router.get('/users/:id', getUserById);
+router.patch('/users/:id', updateUser);
 router.get('/all-products', getAllProducts);
 router.post('/products', createProduct);
 router.patch('/products/:id', updateProduct);

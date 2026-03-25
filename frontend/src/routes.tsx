@@ -16,6 +16,7 @@ const Profile = React.lazy(() => import('./features/profile/components/Profile')
 const AdminDashboard = React.lazy(() => import('./features/admin/components/Dashboard').then(m => ({ default: m.AdminDashboard })));
 const Home = React.lazy(() => import('./features/home/components/Home').then(m => ({ default: m.Home })));
 const Wishlist = React.lazy(() => import('./features/wishlist/components/Wishlist').then(m => ({ default: m.Wishlist })));
+const UserDetail = React.lazy(() => import('./features/admin/components/UserDetail').then(m => ({ default: m.UserDetail })));
 
 // Universal component split loader skeleton
 const PageLoader = () => (
@@ -143,6 +144,18 @@ const adminRoute = createRoute({
   ),
 });
 
+const adminUserDetailRoute = createRoute({
+  getParentRoute: () => protectedLayoutRoute,
+  path: '/admin/users/$userId',
+  component: () => (
+    <ProtectedLayout requireAdmin>
+      <Suspense fallback={<PageLoader />}>
+        <UserDetail />
+      </Suspense>
+    </ProtectedLayout>
+  ),
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   productsRoute,
@@ -156,6 +169,7 @@ const routeTree = rootRoute.addChildren([
     checkoutRoute,
     profileRoute,
     adminRoute,
+    adminUserDetailRoute,
   ]),
 ]);
 

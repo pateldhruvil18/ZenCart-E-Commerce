@@ -81,16 +81,58 @@ const deleteReview = async (req, res) => {
   }
 };
 
+// GET /admin/users/:id
+const getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select('-password').lean();
+    if (!user) return handleError(res, buildErrorObject(404, 'User not found'));
+
+    // Fetch user's order history
+    const orders = await Order.find({ userId: user._id }).sort({ createdAt: -1 }).lean();
+    
+    // Fetch user's reviews
+    const reviews = await Review.find({ user: user._id }).populate('product', 'name images').sort({ createdAt: -1 }).lean();
+
+    return buildResponse(res, 200, { user, orders, reviews });
+  } catch (err) {
+    return handleError(res, err);
+  }
+};
+
+// PATCH /admin/users/:id
+const updateUser = async (req, res) => {
+  try {
+    const { role, status } = req.body;
+    const user = await User.findById(req.params.id);
+    if (!user) return handleError(res, buildErrorObject(404, 'User not found'));
+
+    if (role) user.role = role;
+    if (status) user.status = status;
+
+    await user.save();
+    return buildResponse(res, 200, user, 'User updated successfully');
+  } catch (err) {
+    return handleError(res, err);
+  }
+};
+
 // GET /admin/users
 const getAllUsers = async (req, res) => {
   try {
-    const { page = 1, limit = 20 } = req.query;
+    const { page = 1, limit = 20, search = '' } = req.query;
+    let query = {};
+    if (search) {
+      const regex = new RegExp(search, 'i');
+      query = {
+        $or: [{ name: regex }, { email: regex }],
+      };
+    }
     const skip = (Number(page) - 1) * Number(limit);
     const [users, total] = await Promise.all([
-      User.find({}).sort({ createdAt: -1 }).skip(skip).limit(Number(limit)).select('-password'),
-      User.countDocuments({}),
+      User.find(query).sort({ createdAt: -1 }).skip(skip).limit(Number(limit)).select('-password'),
+      User.countDocuments(query),
     ]);
-    return buildResponse(res, 200, { users, totalPages: Math.ceil(total / limit), currentPage: Number(page) });
+    return buildResponse(res, 200, { users, totalPages: Math.ceil(total / Number(limit)), currentPage: Number(page) });
   } catch (err) {
     return handleError(res, err);
   }
@@ -115,4 +157,4 @@ const getAllProducts = async (req, res) => {
   }
 };
 
-module.exports = { getDashboard, getAllOrders, updateOrderStatus, deleteReview, getAllUsers, getAllProducts };
+module.exports = { getDashboard, getAllOrders, updateOrderStatus, deleteReview, getAllUsers, getAllProducts, getUserById, updateUser };

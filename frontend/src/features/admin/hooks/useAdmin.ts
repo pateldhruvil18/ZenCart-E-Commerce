@@ -26,10 +26,29 @@ export const useUpdateOrderStatus = () => {
   });
 };
 
-export const useAdminUsers = (page: number) => {
+export const useAdminUsers = (page: number, search?: string) => {
   return useQuery({
-    queryKey: ['admin-users', page],
-    queryFn: () => adminService.getUsers(page),
+    queryKey: ['admin-users', page, search],
+    queryFn: () => adminService.getUsers(page, search),
+  });
+};
+
+export const useAdminUserDetail = (id: string) => {
+  return useQuery({
+    queryKey: ['admin-user-detail', id],
+    queryFn: () => adminService.getUserDetail(id),
+    enabled: !!id,
+  });
+};
+
+export const useUpdateUser = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: adminService.updateUser,
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({ queryKey: ['admin-users'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-user-detail', data.data._id] });
+    },
   });
 };
 
