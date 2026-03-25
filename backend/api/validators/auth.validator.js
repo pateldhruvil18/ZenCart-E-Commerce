@@ -15,9 +15,7 @@ exports.register = [
 
   check('password')
     .notEmpty().withMessage('Password is required')
-    .isLength({ min: 6 }).withMessage('Password must be at least 6 characters')
-    .matches(/[A-Z]/).withMessage('Password must contain at least one uppercase letter')
-    .matches(/[0-9]/).withMessage('Password must contain at least one number'),
+    .isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
 ];
 
 // ─── Login ───────────────────────────────────────────────────────────────────
@@ -81,9 +79,7 @@ exports.resetPassword = [
 
   check('password')
     .notEmpty().withMessage('New password is required')
-    .isLength({ min: 6 }).withMessage('Password must be at least 6 characters')
-    .matches(/[A-Z]/).withMessage('Password must contain at least one uppercase letter')
-    .matches(/[0-9]/).withMessage('Password must contain at least one number'),
+    .isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
 ];
 
 // ─── Change Password (authenticated) ─────────────────────────────────────────
@@ -94,8 +90,6 @@ exports.changePassword = [
   check('newPassword')
     .notEmpty().withMessage('New password is required')
     .isLength({ min: 6 }).withMessage('New password must be at least 6 characters')
-    .matches(/[A-Z]/).withMessage('New password must contain at least one uppercase letter')
-    .matches(/[0-9]/).withMessage('New password must contain at least one number')
     .custom((value, { req }) => {
       if (value === req.body.oldPassword) {
         throw new Error('New password must be different from current password');

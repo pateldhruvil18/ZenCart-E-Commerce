@@ -1,7 +1,8 @@
 const buildErrorObject = (statusCode, message) => {
-  const error = new Error(message);
-  error.statusCode = statusCode;
-  return error;
+  return {
+    statusCode,
+    message
+  };
 };
 
 module.exports = buildErrorObject;
