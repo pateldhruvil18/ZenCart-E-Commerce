@@ -1,20 +1,30 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAdminUsers } from '../hooks/useAdmin';
 import { Calendar, User as UserIcon, Shield, Search, X, ChevronRight } from 'lucide-react';
-import { Link } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 
 export const AdminUsers = () => {
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
+  const [searchInput, setSearchInput] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   
-  const { data: usersData, isLoading } = useAdminUsers(page, search.trim() || undefined);
+  const { data: usersData, isLoading } = useAdminUsers(page, searchTerm.trim() || undefined);
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearchTerm(searchInput);
+      setPage(1);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchInput]);
 
   const users = usersData?.data?.users || [];
   const totalPages = usersData?.data?.totalPages || 0;
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-    setPage(1);
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(e.target.value);
   };
 
   if (isLoading && page === 1) return (
@@ -42,14 +52,14 @@ export const AdminUsers = () => {
           <input
             type="text"
             placeholder="Search by name or email..."
-            value={search}
-            onChange={handleSearch}
+            value={searchInput}
+            onChange={handleSearchChange}
             className="w-full h-10 pl-9 pr-4 border-2 border-border/50 rounded-xl text-sm font-medium bg-white focus:border-black outline-none transition-all"
           />
         </div>
-        {search && (
+        {searchInput && (
           <button
-            onClick={() => setSearch('')}
+            onClick={() => setSearchInput('')}
             className="h-10 px-4 border border-border/50 rounded-xl text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-black hover:border-black/30 transition-colors flex items-center gap-2"
           >
             <X className="w-3 h-3" /> Clear
@@ -79,10 +89,16 @@ export const AdminUsers = () => {
               </thead>
               <tbody className="divide-y divide-border/50">
                 {users.map((user: any) => (
-                  <tr key={user._id} className="hover:bg-slate-50 transition-colors group">
+                  <tr 
+                    key={user._id} 
+                    className="hover:bg-slate-50 transition-colors group cursor-pointer"
+                    onClick={() => {
+                        navigate({ to: '/admin/users/$userId', params: { userId: user._id } });
+                    }}
+                  >
                     <td className="px-8 py-5">
                       <Link 
-                        to="/protected/admin/users/$userId" 
+                        to="/admin/users/$userId" 
                         params={{ userId: user._id }}
                         className="flex items-center gap-4 group/link"
                       >
@@ -121,7 +137,7 @@ export const AdminUsers = () => {
                     </td>
                     <td className="px-8 py-5 text-right">
                        <Link 
-                        to="/protected/admin/users/$userId" 
+                        to="/admin/users/$userId" 
                         params={{ userId: user._id }}
                         className="p-2 inline-flex hover:bg-black hover:text-white rounded-lg transition-all border border-transparent hover:border-black/10 group-hover:translate-x-1"
                        >

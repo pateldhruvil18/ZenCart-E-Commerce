@@ -15,7 +15,7 @@ import {
 import toast from 'react-hot-toast';
 
 export const UserDetail = () => {
-  const { userId } = useParams({ from: '/protected/admin/users/$userId' });
+  const { userId } = useParams({ from: '/admin/users/$userId' });
   const { data: userData, isLoading } = useAdminUserDetail(userId);
   const updateUser = useUpdateUser();
 
@@ -45,7 +45,8 @@ export const UserDetail = () => {
     <div className="space-y-8 pb-12">
       {/* Breadcrumbs/Back */}
       <Link 
-        to="/protected/admin"
+        to="/admin" 
+        search={{ tab: 'users' }}
         className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-black transition-colors"
       >
         <ChevronLeft className="w-4 h-4" /> Back to users

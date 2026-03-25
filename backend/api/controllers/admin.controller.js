@@ -28,7 +28,7 @@ const getDashboard = async (req, res) => {
 // GET /admin/orders
 const getAllOrders = async (req, res) => {
   try {
-    const { page = 1, limit = 20, status } = req.query;
+    const { page = 1, limit = 10, status } = req.query;
     const query = status ? { orderStatus: status } : {};
     const skip = (Number(page) - 1) * Number(limit);
     const [orders, total] = await Promise.all([
@@ -119,7 +119,7 @@ const updateUser = async (req, res) => {
 // GET /admin/users
 const getAllUsers = async (req, res) => {
   try {
-    const { page = 1, limit = 20, search = '' } = req.query;
+    const { page = 1, limit = 10, search = '' } = req.query;
     let query = {};
     if (search) {
       const regex = new RegExp(search, 'i');
@@ -141,7 +141,7 @@ const getAllUsers = async (req, res) => {
 // GET /admin/products
 const getAllProducts = async (req, res) => {
   try {
-    const { page = 1, limit = 20, category, search, productId } = req.query;
+    const { page = 1, limit = 10, category, search, productId } = req.query;
     const query = {};
     if (category) query.category = category;
     if (productId) query._id = productId;  // exact product ID match

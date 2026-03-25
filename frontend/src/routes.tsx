@@ -107,7 +107,7 @@ const wishlistRoute = createRoute({
 // Protected routes
 const protectedLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
-  id: 'protected',
+  path: '',
   component: () => (
     <ProtectedLayout>
       <Outlet />
@@ -135,7 +135,7 @@ const profileRoute = createRoute({
 
 
 const adminRoute = createRoute({
-  getParentRoute: () => protectedLayoutRoute,
+  getParentRoute: () => rootRoute,
   path: '/admin',
   component: () => (
     <ProtectedLayout requireAdmin>
@@ -145,7 +145,7 @@ const adminRoute = createRoute({
 });
 
 const adminUserDetailRoute = createRoute({
-  getParentRoute: () => protectedLayoutRoute,
+  getParentRoute: () => rootRoute,
   path: '/admin/users/$userId',
   component: () => (
     <ProtectedLayout requireAdmin>
@@ -165,11 +165,11 @@ const routeTree = rootRoute.addChildren([
   forgotPasswordRoute,
   cartRoute,
   wishlistRoute,
+  adminRoute,
+  adminUserDetailRoute,
   protectedLayoutRoute.addChildren([
     checkoutRoute,
     profileRoute,
-    adminRoute,
-    adminUserDetailRoute,
   ]),
 ]);
 

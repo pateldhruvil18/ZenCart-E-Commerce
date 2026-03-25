@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { LayoutDashboard, ShoppingBag, Users, ClipboardList, Settings } from 'lucide-react';
+import { useSearch } from '@tanstack/react-router';
 import { AdminOverview } from './AdminOverview';
 import { AdminProducts } from './AdminProducts';
 import { AdminOrders } from './AdminOrders';
@@ -7,7 +8,13 @@ import { AdminUsers } from './AdminUsers';
 import { AdminSettings } from './AdminSettings';
 
 export const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState('overview');
+  const search: any = useSearch({ from: '/admin' });
+  const [activeTab, setActiveTab] = useState(search.tab || 'overview');
+
+  // Update activeTab if URL search param changes
+  useEffect(() => {
+    if (search.tab) setActiveTab(search.tab);
+  }, [search.tab]);
 
   const menuItems = [
     { id: 'overview', label: 'Overview', icon: LayoutDashboard },
