@@ -107,7 +107,7 @@ const wishlistRoute = createRoute({
 // Protected routes
 const protectedLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '',
+  id: 'auth-layout',
   component: () => (
     <ProtectedLayout>
       <Outlet />

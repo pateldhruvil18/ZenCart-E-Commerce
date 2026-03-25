@@ -84,7 +84,7 @@ export const UserDetail = () => {
           <div className="glass-panel bg-white p-6 rounded-[2rem] border border-border/50 shadow-xl shadow-slate-200/50 space-y-6">
              <h3 className="text-xs font-black uppercase tracking-widest px-2">Administrative Actions</h3>
              <div className="space-y-3">
-                <button 
+                {/* <button 
                   onClick={handleRoleToggle}
                   disabled={updateUser.isPending}
                   className="w-full h-12 px-6 rounded-xl border-2 border-slate-200 text-[10px] font-black uppercase tracking-widest flex items-center justify-between hover:bg-slate-50 transition-all active:scale-95 disabled:opacity-50"
@@ -93,7 +93,7 @@ export const UserDetail = () => {
                     <ShieldCheck className="w-4 h-4 text-blue-500" />
                     <span>{user.role === 'admin' ? 'Revoke Admin' : 'Make Admin'}</span>
                   </div>
-                </button>
+                </button> */}
                 <button 
                   onClick={handleStatusToggle}
                   disabled={updateUser.isPending}
