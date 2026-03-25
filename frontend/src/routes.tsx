@@ -170,8 +170,8 @@ const routeTree = rootRoute.addChildren([
   forgotPasswordRoute,
   cartRoute,
   wishlistRoute,
-  adminRoute,
   adminUserDetailRoute,
+  adminRoute,
   protectedLayoutRoute.addChildren([
     checkoutRoute,
     profileRoute,

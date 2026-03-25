@@ -1,4 +1,4 @@
-import { useParams, Link } from '@tanstack/react-router';
+import { useParams, useNavigate } from '@tanstack/react-router';
 import { useAdminUserDetail, useUpdateUser } from '../hooks/useAdmin';
 import { 
   User as UserIcon, 
@@ -15,6 +15,7 @@ import {
 import toast from 'react-hot-toast';
 
 export const UserDetail = () => {
+  const navigate = useNavigate();
   const { userId } = useParams({ from: '/admin/users/$userId' });
   const { data: userData, isLoading } = useAdminUserDetail(userId);
   const updateUser = useUpdateUser();
@@ -26,6 +27,10 @@ export const UserDetail = () => {
   );
 
   const { user, orders, reviews } = userData?.data || {};
+
+  const handleBack = () => {
+    navigate({ to: '/admin', search: { tab: 'users' } });
+  };
 
   const handleStatusToggle = () => {
     const newStatus = user.status === 'blocked' ? 'active' : 'blocked';
@@ -44,13 +49,12 @@ export const UserDetail = () => {
   return (
     <div className="space-y-8 pb-12">
       {/* Breadcrumbs/Back */}
-      <Link 
-        to="/admin" 
-        search={{ tab: 'users' }}
+      <button 
+        onClick={handleBack}
         className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-black transition-colors"
       >
         <ChevronLeft className="w-4 h-4" /> Back to users
-      </Link>
+      </button>
 
       {/* Profile Header */}
       <div className="flex flex-col lg:flex-row gap-8">
