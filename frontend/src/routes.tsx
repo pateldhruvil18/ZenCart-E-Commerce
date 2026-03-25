@@ -137,6 +137,11 @@ const profileRoute = createRoute({
 const adminRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/admin',
+  validateSearch: (search: Record<string, unknown>): { tab?: string } => {
+    return {
+      tab: (search.tab as string) || undefined,
+    }
+  },
   component: () => (
     <ProtectedLayout requireAdmin>
       <Suspense fallback={<PageLoader />}><AdminDashboard /></Suspense>
