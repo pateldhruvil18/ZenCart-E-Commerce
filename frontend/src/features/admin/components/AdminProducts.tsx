@@ -83,7 +83,7 @@ export const AdminProducts = () => {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
-      const newImageUrl = `http://localhost:5000${res.data.imageUrl}`;
+      const newImageUrl = res.data.imageUrl; // Cloudinary absolute URL
       setFormData(prev => ({
         ...prev,
         images: prev.images ? `${prev.images}, ${newImageUrl}` : newImageUrl

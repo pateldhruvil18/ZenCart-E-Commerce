@@ -41,7 +41,12 @@ const getProducts = async (req, res) => {
 
     const skip = (Number(page) - 1) * Number(limit);
     const [products, totalCount] = await Promise.all([
-      Product.find(query).sort(sortOptions).skip(skip).limit(Number(limit)).lean(),
+      Product.find(query)
+        .select('name price originalPrice category brand images stock rating numReviews isFeatured isTrending')
+        .sort(sortOptions)
+        .skip(skip)
+        .limit(Number(limit))
+        .lean(),
       Product.countDocuments(query),
     ]);
     const totalPages = Math.ceil(totalCount / Number(limit));

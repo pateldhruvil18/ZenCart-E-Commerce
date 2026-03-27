@@ -4,6 +4,8 @@ import { MainLayout } from './components/shared/MainLayout';
 import { ProtectedLayout } from './components/shared/ProtectedLayout';
 import { CartProvider } from './features/cart/components/CartProvider';
 import React, { Suspense } from 'react';
+import { queryClient } from './queryClient';
+import { productsService } from './features/products/service';
 
 // Defer monolithic feature payloads to minimize initial TTI metrics
 const ProductListing = React.lazy(() => import('./features/products/components/ProductListing').then(m => ({ default: m.ProductListing })));
@@ -40,12 +42,19 @@ const rootRoute = createRootRoute({
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
+  loader: () => {
+    queryClient.prefetchQuery({ queryKey: ['products', { limit: 12, sortBy: 'rating', order: 'desc' }], queryFn: () => productsService.getProducts({ limit: 12, sortBy: 'rating', order: 'desc' }) });
+    queryClient.prefetchQuery({ queryKey: ['products', { limit: 4, sortBy: 'numReviews', order: 'desc' }], queryFn: () => productsService.getProducts({ limit: 4, sortBy: 'numReviews', order: 'desc' }) });
+  },
   component: () => <Suspense fallback={<PageLoader />}><Home /></Suspense>,
 });
 
 const productsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/products',
+  loader: () => {
+    queryClient.prefetchQuery({ queryKey: ['products', { page: 1, limit: 12, sortBy: 'createdAt', order: 'desc' }], queryFn: () => productsService.getProducts({ page: 1, limit: 12, sortBy: 'createdAt', order: 'desc' }) });
+  },
   component: () => (
     <div className="section py-8">
       <Suspense fallback={<PageLoader />}><ProductListing /></Suspense>
@@ -56,6 +65,12 @@ const productsRoute = createRoute({
 const productDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/products/$productId',
+  loader: async ({ params }) => {
+    return queryClient.prefetchQuery({
+      queryKey: ['product', params.productId],
+      queryFn: () => productsService.getProductById(params.productId)
+    });
+  },
   component: () => <Suspense fallback={<PageLoader />}><ProductDetail /></Suspense>,
 });
 

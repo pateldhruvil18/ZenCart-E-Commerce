@@ -32,8 +32,7 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Static Files
-app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+// Static Files served via Cloudinary now.
 
 // API Routes
 app.use('/api', require('./api/routes/index'));
