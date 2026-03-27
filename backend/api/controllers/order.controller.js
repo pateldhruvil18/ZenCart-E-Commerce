@@ -7,6 +7,7 @@ const Product = require('../models/product.schema');
 const buildResponse = require('../utils/buildResponse');
 const buildErrorObject = require('../utils/buildErrorObject');
 const handleError = require('../utils/handleError');
+const sendSMS = require('../helpers/sendSMS');
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
@@ -97,6 +98,13 @@ const createOrder = async (req, res) => {
       }
 
       if (!isDirectPurchase) await Cart.findOneAndDelete({ userId });
+
+      // 🔔 Fire-and-forget SMS — does NOT block the response
+      if (address.phone) {
+        const smsMessage = `✅ Your order #${order._id.toString().slice(-6).toUpperCase()} is confirmed. Total: ₹${totalAmount.toLocaleString('en-IN')}. Thank you for shopping with ZenCart! — Team ZenCart`;
+        sendSMS(address.phone, smsMessage).catch(err => console.error('[SMS Background Error]', err.message));
+      }
+
       return buildResponse(res, 201, { orderId: order._id, bypassRazorpay: true }, 'Order placed successfully');
     }
 
@@ -168,6 +176,12 @@ const verifyPayment = async (req, res) => {
     // Clear cart after successful order IF not a direct override
     if (!isDirectPurchase) {
       await Cart.findOneAndDelete({ userId });
+    }
+
+    // 🔔 Fire-and-forget SMS — does NOT block the response
+    if (order.address?.phone) {
+      const smsMessage = `✅ Your order #${order._id.toString().slice(-6).toUpperCase()} is confirmed. Total: ₹${order.totalAmount.toLocaleString('en-IN')}. Thank you for shopping with ZenCart! — Team ZenCart`;
+      sendSMS(order.address.phone, smsMessage).catch(err => console.error('[SMS Background Error]', err.message));
     }
 
     return buildResponse(res, 201, { orderId: order._id }, 'Payment verified and order placed successfully');
