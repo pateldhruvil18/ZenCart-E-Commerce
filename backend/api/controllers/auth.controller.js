@@ -139,6 +139,10 @@ const login = async (req, res) => {
       return handleError(res, buildErrorObject(403, 'Please verify your email. Check your inbox for the OTP.'));
     }
 
+    if (user.status === 'blocked') {
+      return handleError(res, buildErrorObject(403, 'Your account has been blocked by the administrator. Please contact support.'));
+    }
+
     // Merge guest data
     if (sessionId) {
       await mergeGuestCart(sessionId, user._id.toString());

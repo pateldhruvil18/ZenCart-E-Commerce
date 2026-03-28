@@ -1,11 +1,12 @@
 const jwt = require('jsonwebtoken');
+const User = require('../models/user.schema');
 const buildErrorObject = require('../utils/buildErrorObject');
 const handleError = require('../utils/handleError');
 
 /**
  * Protect routes - requires valid JWT
  */
-const protect = (req, res, next) => {
+const protect = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -13,6 +14,16 @@ const protect = (req, res, next) => {
     }
     const token = authHeader.split(' ')[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Live DB check: ensure account is still active (catches blocked users with valid tokens)
+    const user = await User.findById(decoded.id).select('status').lean();
+    if (!user) {
+      return handleError(res, buildErrorObject(401, 'User no longer exists'));
+    }
+    if (user.status === 'blocked') {
+      return handleError(res, buildErrorObject(403, 'Your account has been blocked by the administrator. Please contact support.'));
+    }
+
     req.user = decoded;
     next();
   } catch (err) {
