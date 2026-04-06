@@ -8,7 +8,7 @@ const handleError = require('../utils/handleError');
 // GET /products
 const getProducts = async (req, res) => {
   try {
-    const {
+    let {
       page = 1,
       limit = 10,
       search = '',
@@ -22,37 +22,65 @@ const getProducts = async (req, res) => {
 
     const query = {};
 
-    if (search) {
-      const regex = new RegExp(search, 'i');
+    // Validate and sanitize search: Escape regex special characters to prevent RegExp errors
+    if (search && typeof search === 'string') {
+      const sanitizedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regex = new RegExp(sanitizedSearch, 'i');
       query.$or = [{ name: regex }, { description: regex }, { tags: regex }];
     }
-    if (category) query.category = category.toLowerCase();
+
+    if (category) query.category = String(category).toLowerCase();
+
+    // Validate and sanitize price range
     if (minPrice || maxPrice) {
       query.price = {};
-      if (minPrice) query.price.$gte = Number(minPrice);
-      if (maxPrice) query.price.$lte = Number(maxPrice);
+      const min = Number(minPrice);
+      const max = Number(maxPrice);
+      
+      if (!isNaN(min)) query.price.$gte = min;
+      if (!isNaN(max)) query.price.$lte = max;
+      
+      // If no valid price filters were added, remove the empty price object
+      if (Object.keys(query.price).length === 0) delete query.price;
     }
-    if (rating) query.rating = { $gte: Number(rating) };
+
+    // Validate and sanitize rating
+    const numRating = Number(rating);
+    if (!isNaN(numRating) && numRating > 0) {
+      query.rating = { $gte: numRating };
+    }
 
     const sortOptions = {};
     if (sortBy === 'price') sortOptions.price = order === 'asc' ? 1 : -1;
     else if (sortBy === 'rating') sortOptions.rating = -1;
     else sortOptions.createdAt = -1;
 
-    const skip = (Number(page) - 1) * Number(limit);
+    // Validate and sanitize pagination to avoid NaN or negative skip
+    let numPage = Math.max(1, parseInt(page) || 1);
+    let numLimit = Math.max(1, parseInt(limit) || 10);
+    const skip = (numPage - 1) * numLimit;
+
+    // Execute query with validated parameters
     const [products, totalCount] = await Promise.all([
       Product.find(query)
         .select('name price originalPrice category brand images stock rating numReviews isFeatured isTrending')
         .sort(sortOptions)
         .skip(skip)
-        .limit(Number(limit))
+        .limit(numLimit)
         .lean(),
       Product.countDocuments(query),
     ]);
-    const totalPages = Math.ceil(totalCount / Number(limit));
+    
+    const totalPages = Math.ceil(totalCount / numLimit);
 
-    return buildResponse(res, 200, { products, totalPages, currentPage: Number(page), totalCount });
+    return buildResponse(res, 200, { 
+      products, 
+      totalPages, 
+      currentPage: numPage, 
+      totalCount 
+    });
   } catch (err) {
+    // If something still goes wrong, the error handler will catch it safely
     return handleError(res, err);
   }
 };
