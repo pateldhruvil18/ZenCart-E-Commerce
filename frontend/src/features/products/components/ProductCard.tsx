@@ -1,5 +1,5 @@
 import { Link, useNavigate } from '@tanstack/react-router';
-import { Heart, Star } from 'lucide-react';
+import { Heart, Star, TrendingUp } from 'lucide-react';
 import { useAuthStore } from '../../../store/authStore';
 import { useWishlist, useAddToWishlist, useRemoveFromWishlist } from '../../wishlist/hooks/useWishlist';
 import { useAddToCart } from '../../cart/hooks/useCart';
@@ -94,6 +94,9 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             <span className="text-[9px] bg-black text-white px-2 py-1 rounded-sm font-black uppercase tracking-widest shadow-lg">
               Featured
             </span>
+          )}
+          {product.isTrending && (
+            <span className='text-[9px] bg-white text-black px-2 py-1 rounded-sm font-black uppercase tracking-widest shadow-lg border border-border flex items-center gap-1'><TrendingUp className='w-3 h-3 fill-black text-black'/>Trending Now</span>
           )}
           {product.rating > 4.5 && (
             <span className="text-[9px] bg-white text-black px-2 py-1 rounded-sm font-black uppercase tracking-widest shadow-lg border border-border flex items-center gap-1">
