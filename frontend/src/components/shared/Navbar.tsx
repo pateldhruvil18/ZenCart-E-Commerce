@@ -1,6 +1,6 @@
 import { Link, useLocation } from '@tanstack/react-router';
 import { useAuthStore } from '../../store/authStore';
-import { ShoppingCart, User, LogOut, LayoutDashboard, Heart, Search, Home } from 'lucide-react';
+import { ShoppingCart, User, LogOut, LayoutDashboard, Heart, Search, Home, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../../features/cart/hooks/useCart';
@@ -12,6 +12,7 @@ export const Navbar = () => {
   const { isAuthenticated, user, logout } = useAuthStore();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -46,7 +47,6 @@ export const Navbar = () => {
 
   const navTextColor = (isHome && !isScrolled) ? 'text-white' : 'text-black';
   const navMutedColor = (isHome && !isScrolled) ? 'text-white/60' : 'text-muted-foreground';
-
 
   const isActive = (path: string) => location.pathname === path || (path !== '/' && location.pathname.startsWith(path));
   const getNavColor = (path: string) => isActive(path) ? navTextColor : navMutedColor;
@@ -106,7 +106,7 @@ export const Navbar = () => {
       >
         <div className="section flex flex-wrap md:flex-nowrap items-center justify-between font-black gap-y-4">
           {/* Brand */}
-          <Link to="/" className={`flex items-center gap-2.5 text-2xl tracking-tighter select-none group order-1 ${navTextColor}`}>
+          <Link to="/" className={`flex items-center gap-2.5 text-2xl tracking-tighter select-none group order-1 flex-shrink-0 ${navTextColor}`}>
             <img
               src="/logo.svg"
               alt="ZenCart"
@@ -116,7 +116,7 @@ export const Navbar = () => {
           </Link>
 
           {/* Search Bar */}
-          <div className="w-full order-3 md:order-none md:flex-1 md:max-w-md md:mx-12 relative group flex">
+          <div className={`${isMobileSearchOpen ? 'flex' : 'hidden md:flex'} w-full order-3 md:order-none md:flex-1 md:max-w-md md:mx-12 relative group`}>
             <Search className={`absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 transition-colors ${navMutedColor} group-focus-within:text-black`} />
             <input 
               type="text" 
@@ -130,7 +130,7 @@ export const Navbar = () => {
               placeholder="Search products..." 
               className={`w-full h-11 border-transparent rounded-xl md:rounded-2xl pl-12 pr-4 text-xs font-bold transition-all outline-none 
                 ${(isHome && !isScrolled) 
-                  ? 'bg-white/10 text-white placeholder:text-white/60 md:placeholder:text-white/40 focus:bg-white/20' 
+                  ? 'bg-white/10 text-white placeholder:text-white/60 md:placeholder:text-white/40 focus:bg-white/20 focus:bg-white focus:text-black' 
                   : 'bg-muted/50 text-black placeholder:text-muted-foreground focus:bg-muted font-bold'}`}
             />
 
@@ -164,7 +164,7 @@ export const Navbar = () => {
                           to="/products/$productId" 
                           params={{ productId: product._id }}
                           className="flex items-center gap-4 p-4 hover:bg-muted/50 transition-colors"
-                          onClick={() => { setShowSuggestions(false); setSearchQuery(''); }}
+                          onClick={() => { setShowSuggestions(false); setSearchQuery(''); setIsMobileSearchOpen(false); }}
                         >
                           <div className="w-12 h-12 bg-muted rounded-xl bg-cover bg-center shrink-0 border border-border/50" style={{ backgroundImage: `url(${product.images?.[0]})` }} />
                           <div className="flex-1 min-w-0">
@@ -185,7 +185,7 @@ export const Navbar = () => {
           </div>
 
           {/* Icons & Actions */}
-          <div className="flex items-center gap-4 md:gap-8 order-2 md:order-none">
+          <div className="flex items-center gap-2 md:gap-8 order-2 md:order-none">
             <nav className={`hidden md:flex items-center gap-8 text-[10px] uppercase tracking-[0.2em]`}>
               <Link to="/products" className={`transition-colors hover:text-primary ${getNavColor('/products')} ${isActive('/products') ? 'font-black' : 'font-bold'}`}>Products</Link>
               <Link to="/wishlist" className={`relative transition-colors flex items-center gap-2 hover:text-primary ${getNavColor('/wishlist')} ${isActive('/wishlist') ? 'font-black' : 'font-bold'}`}>
@@ -200,7 +200,16 @@ export const Navbar = () => {
 
             <div className={`h-4 w-[1px] mx-2 hidden md:block ${(isHome && !isScrolled) ? 'bg-white/20' : 'bg-border'}`} />
 
-            <div className="flex items-center gap-4 md:gap-6">
+            <div className="flex items-center gap-3 md:gap-6">
+              {/* Mobile Search Toggle Icon */}
+              <button 
+                onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
+                className={`md:hidden flex items-center justify-center w-10 h-10 rounded-xl transition-colors ${navTextColor} ${isMobileSearchOpen ? 'bg-black/10' : ''}`}
+                title="Toggle Search"
+              >
+                {isMobileSearchOpen ? <X className="h-5 w-5" /> : <Search className="h-5 w-5" />}
+              </button>
+
               {/* Desktop Cart */}
               <button 
                 onClick={() => setIsCartOpen(true)}
@@ -238,7 +247,7 @@ export const Navbar = () => {
                   </button>
                 </div>
               ) : (
-                <div className="flex items-center gap-3 md:gap-5">
+                <div className="flex items-center gap-2 md:gap-5">
                   <Link to="/login" className={`hidden md:flex text-[10px] font-black uppercase tracking-[0.2em] transition-colors items-center ${navMutedColor} hover:text-primary`}>Login</Link>
                   <Link to="/register" className={`h-9 px-4 md:h-11 md:px-8 text-center rounded-xl text-[10px] font-black uppercase tracking-[0.1em] md:tracking-[0.2em] flex items-center justify-center transition-all active:scale-95 md:shadow-xl ${(isHome && !isScrolled) ? 'bg-white text-black hover:bg-white/90 shadow-white/5' : 'bg-black text-white md:hover:bg-slate-800 shadow-slate-200/50'}`}>
                     Login / Join
