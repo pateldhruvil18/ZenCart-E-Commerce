@@ -237,7 +237,7 @@ export const Navbar = () => {
                   </Link>
 
                   {user?.role === 'admin' && (
-                    <Link to="/admin" className={`transition-colors hidden md:flex items-center ${getNavColor('/admin')} hover:text-primary`} title="Admin Dashboard">
+                    <Link to="/admin" className={`transition-colors flex items-center ${getNavColor('/admin')} hover:text-primary`} title="Admin Dashboard">
                       <LayoutDashboard className="h-5 w-5" />
                     </Link>
                   )}
