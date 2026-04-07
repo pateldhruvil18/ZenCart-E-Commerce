@@ -6,7 +6,7 @@ import { Search, ChevronDown } from 'lucide-react';
 import { ProductCard } from './ProductCard';
 import { FilterSidebar } from './FilterSidebar';
 
-const CATEGORIES = ['All', 'Electronics', 'Clothing', 'Accessories', 'Shoes', 'Sports', 'Home'];
+const CATEGORIES = ['All', 'Electronics', 'Clothing', 'Accessories', 'Shoes', 'Sports', 'Home', 'toys', 'Beauty'];
 
 export const ProductListing = () => {
   const searchParams: any = useSearch({ strict: false });
