@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useSearch } from '@tanstack/react-router';
+import { useSearch, useNavigate } from '@tanstack/react-router';
 import { useProducts } from '../hooks/useProducts';
 import { useDebounce } from '../../../hooks/useDebounce';
 import { Search, ChevronDown } from 'lucide-react';
@@ -9,10 +9,34 @@ import { FilterSidebar } from './FilterSidebar';
 const CATEGORIES = ['All', 'Electronics', 'Clothing', 'Accessories', 'Shoes', 'Sports', 'Home', 'toys', 'Beauty'];
 
 export const ProductListing = () => {
+  const navigate = useNavigate();
   const searchParams: any = useSearch({ strict: false });
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState(searchParams?.search || '');
   const debouncedSearch = useDebounce(searchTerm, 500);
   const [page, setPage] = useState(1);
+  
+  // Sync the `searchTerm` local state whenever searchParams.search changes natively (e.g. from navbar navigation)
+  useEffect(() => {
+    if (searchParams?.search !== undefined && searchParams?.search !== searchTerm) {
+      setSearchTerm(searchParams.search);
+      setPage(1);
+    } else if (!searchParams?.search && searchTerm && !debouncedSearch) {
+      setSearchTerm('');
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams?.search]);
+
+  // Sync URl params quietly when debouncedSearch changes locally 
+  useEffect(() => {
+     navigate({
+        to: '.',
+        search: (prev: any) => ({ 
+           ...(prev || {}), 
+           search: debouncedSearch || undefined 
+        }),
+        replace: true
+     });
+  }, [debouncedSearch, navigate]);
   
   const [category, setCategory] = useState('');
   const [sortBy, setSortBy] = useState('createdAt');

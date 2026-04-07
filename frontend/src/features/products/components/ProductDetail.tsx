@@ -3,7 +3,7 @@ import { useProductDetails } from '../hooks/useProducts';
 import { useAddToCart } from '../../cart/hooks/useCart';
 import { useAuthStore } from '../../../store/authStore';
 import { ShoppingCart, Star, ArrowLeft, Package, Tag, Heart } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useWishlist, useAddToWishlist, useRemoveFromWishlist } from '../../wishlist/hooks/useWishlist';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/base/Button';
@@ -14,6 +14,7 @@ export const ProductDetail = () => {
   const addToCart = useAddToCart();
   const { isAuthenticated } = useAuthStore();
   const [qty, setQty] = useState(1);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const { data: wishlistData } = useWishlist();
@@ -52,6 +53,14 @@ export const ProductDetail = () => {
   }
 
   const { product, reviews } = data.data;
+  
+  // Hydrate selectedImage properly once product loads
+  useEffect(() => {
+    if (product?.images?.length > 0 && !selectedImage) {
+      setSelectedImage(product.images[0]);
+    }
+  }, [product, selectedImage]);
+
   const isWishlisted = wishlistData?.data?.products?.some((p: any) => p._id === product._id);
   const discount = product.originalPrice
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
@@ -107,16 +116,43 @@ export const ProductDetail = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-        {/* Product Image */}
-        <div className="aspect-square rounded-xl overflow-hidden border border-border bg-muted shadow-sm group">
-          <img
-            src={product.images?.[0] || 'https://placehold.co/600x600/eeeeee/999999.png?text=ZenCart'}
-            alt={product.name}
-            loading="lazy"
-            decoding="async"
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/600x600/eeeeee/999999.png?text=Unavailable'; }}
-          />
+        {/* Product Image Gallery */}
+        <div className="flex flex-col-reverse md:flex-row gap-4 h-full">
+          {/* Mobile Horizontal / Desktop Vertical Thumbnails */}
+          {product.images?.length > 1 && (
+            <div className="flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto w-full md:w-20 shrink-0 pb-2 md:pb-0 scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
+              {product.images.map((img: string, idx: number) => (
+                <button
+                  key={idx}
+                  onClick={() => setSelectedImage(img)}
+                  className={`relative aspect-square w-20 md:w-full flex-shrink-0 rounded-xl overflow-hidden border-2 transition-all duration-300 
+                    ${selectedImage === img 
+                      ? 'border-black ring-2 ring-black/10 scale-[0.98]' 
+                      : 'border-border hover:border-black/50 opacity-60 hover:opacity-100'}`}
+                >
+                  <img
+                    src={img}
+                    alt={`${product.name} thumbnail ${idx + 1}`}
+                    loading="lazy"
+                    className="w-full h-full object-cover"
+                    onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/150x150/eeeeee/999999.png?text=Error'; }}
+                  />
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Main Large Image */}
+          <div className="flex-1 aspect-square rounded-2xl overflow-hidden border border-border bg-slate-50 shadow-sm group relative">
+            <img
+              src={selectedImage || product.images?.[0] || 'https://placehold.co/600x600/eeeeee/999999.png?text=ZenCart'}
+              alt={product.name}
+              loading="lazy"
+              decoding="async"
+              className="w-full h-full object-contain mix-blend-multiply group-hover:scale-[1.12] transition-transform duration-500 ease-out cursor-crosshair"
+              onError={(e) => { (e.target as HTMLImageElement).src = 'https://placehold.co/600x600/eeeeee/999999.png?text=Unavailable'; }}
+            />
+          </div>
         </div>
 
         {/* Product Info */}

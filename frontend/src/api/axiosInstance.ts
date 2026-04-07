@@ -23,6 +23,10 @@ axiosInstance.interceptors.request.use((config) => {
   }
   config.headers['x-session-id'] = sessionId;
   
+  if (config.data instanceof FormData) {
+    delete config.headers['Content-Type'];
+  }
+  
   return config;
 }, (error) => {
   return Promise.reject(error);

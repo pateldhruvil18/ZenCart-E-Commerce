@@ -22,11 +22,37 @@ const getProducts = async (req, res) => {
 
     const query = {};
 
+    let suggestedSearch = null;
+
     // Validate and sanitize search: Escape regex special characters to prevent RegExp errors
     if (search && typeof search === 'string') {
-      const sanitizedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      const regex = new RegExp(sanitizedSearch, 'i');
-      query.$or = [{ name: regex }, { description: regex }, { tags: regex }];
+      const sanitized = search.trim();
+      const sanitizedSearch = sanitized.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      
+      if (sanitizedSearch) {
+        // Split terms allowing for partial word matches (mimicking fuzzy search)
+        const words = sanitizedSearch.split(/\s+/);
+        const orConditions = [];
+        
+        words.forEach(word => {
+          // Substring match
+          const exactRegex = new RegExp(word, 'i');
+          // Basic typo tolerance (e.g. "iphon" -> matches "iphone" and "iphoen" safely without being overly aggressive)
+          const fuzzyPattern = word.split('').join('.?'); 
+          const fuzzyRegex = new RegExp(fuzzyPattern, 'i');
+          
+          orConditions.push({ name: fuzzyRegex });
+          orConditions.push({ description: exactRegex });
+          orConditions.push({ tags: exactRegex });
+        });
+        
+        query.$or = orConditions;
+
+        // Provide a basic fallback 'did you mean' suggestion for common typos
+        if (words.length === 1 && !sanitized.endsWith('s')) {
+          suggestedSearch = sanitized + 's';
+        }
+      }
     }
 
     if (category) query.category = String(category).toLowerCase();
@@ -77,7 +103,8 @@ const getProducts = async (req, res) => {
       products, 
       totalPages, 
       currentPage: numPage, 
-      totalCount 
+      totalCount,
+      suggestedSearch: totalCount === 0 ? suggestedSearch : null
     });
   } catch (err) {
     // If something still goes wrong, the error handler will catch it safely

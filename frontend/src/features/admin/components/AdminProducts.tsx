@@ -79,17 +79,16 @@ export const AdminProducts = () => {
 
     setIsUploading(true);
     try {
-      const res: any = await axiosInstance.post('/upload', uploadData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      const res: any = await axiosInstance.post('/upload', uploadData);
 
       const newImageUrl = res.data.imageUrl; // Cloudinary absolute URL
       setFormData(prev => ({
         ...prev,
         images: prev.images ? `${prev.images}, ${newImageUrl}` : newImageUrl
       }));
-    } catch (err) {
-      alert('Failed to upload image');
+    } catch (err: any) {
+      console.error('Upload Error:', err);
+      alert(err?.message || 'Failed to upload image. Ensure your file is a valid image and under size limits.');
     } finally {
       setIsUploading(false);
     }

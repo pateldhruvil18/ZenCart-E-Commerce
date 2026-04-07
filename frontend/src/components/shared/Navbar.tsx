@@ -1,4 +1,4 @@
-import { Link, useLocation } from '@tanstack/react-router';
+import { Link, useLocation, useNavigate } from '@tanstack/react-router';
 import { useAuthStore } from '../../store/authStore';
 import { ShoppingCart, User, LogOut, LayoutDashboard, Heart, Search, Home, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
@@ -44,6 +44,25 @@ export const Navbar = () => {
   );
 
   const searchResults = (searchData as any)?.data?.products || [];
+  const suggestedSearch = (searchData as any)?.data?.suggestedSearch;
+
+  const navigate = useNavigate();
+
+  const handleSearchSubmit = () => {
+    if (searchQuery.trim()) {
+      setShowSuggestions(false);
+      setIsMobileSearchOpen(false);
+      navigate({ to: '/products', search: { search: searchQuery.trim() } as any });
+    }
+  };
+
+  const highlightText = (text: string, highlight: string) => {
+    if (!highlight.trim()) return text;
+    const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
+    return parts.map((part, i) => 
+      part.toLowerCase() === highlight.toLowerCase() ? <span key={i} className="text-primary font-black bg-primary/10 px-0.5 rounded">{part}</span> : part
+    );
+  };
 
   const navTextColor = (isHome && !isScrolled) ? 'text-white' : 'text-black';
   const navMutedColor = (isHome && !isScrolled) ? 'text-white/60' : 'text-muted-foreground';
@@ -125,6 +144,9 @@ export const Navbar = () => {
                 setSearchQuery(e.target.value);
                 setShowSuggestions(true);
               }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleSearchSubmit();
+              }}
               onFocus={() => setShowSuggestions(true)}
               onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
               placeholder="Search products..." 
@@ -168,11 +190,31 @@ export const Navbar = () => {
                         >
                           <div className="w-12 h-12 bg-muted rounded-xl bg-cover bg-center shrink-0 border border-border/50" style={{ backgroundImage: `url(${product.images?.[0]})` }} />
                           <div className="flex-1 min-w-0">
-                            <h4 className="font-bold text-sm tracking-tight text-black truncate">{product.name}</h4>
+                            <h4 className="font-bold text-sm tracking-tight text-black truncate">{highlightText(product.name, debouncedSearchQuery)}</h4>
                             <p className="text-xs text-muted-foreground font-medium mt-0.5">₹{product.price.toLocaleString('en-IN')}</p>
                           </div>
                         </Link>
                       ))}
+                    </div>
+                  ) : suggestedSearch ? (
+                    <div className="p-8 text-center space-y-2">
+                      <p className="text-sm font-bold text-muted-foreground">No perfect match</p>
+                      <p className="text-sm font-bold text-muted-foreground flex items-center justify-center gap-1.5">
+                        Did you mean:{' '}
+                        <button 
+                          className="text-primary font-black underline decoration-primary/30 underline-offset-4 hover:decoration-primary transition-colors"
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            setSearchQuery(suggestedSearch);
+                            navigate({ to: '/products', search: { search: suggestedSearch } as any });
+                            setShowSuggestions(false);
+                            setIsMobileSearchOpen(false);
+                          }}
+                        >
+                          {suggestedSearch}
+                        </button>
+                        ?
+                      </p>
                     </div>
                   ) : (
                     <div className="p-8 text-center text-sm font-bold text-muted-foreground">
