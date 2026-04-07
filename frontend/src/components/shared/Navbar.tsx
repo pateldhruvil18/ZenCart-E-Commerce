@@ -106,7 +106,7 @@ export const Navbar = () => {
       >
         <div className="section flex flex-wrap md:flex-nowrap items-center justify-between font-black gap-y-4">
           {/* Brand */}
-          <Link to="/" className={`flex items-center gap-2.5 text-2xl tracking-tighter select-none group order-1 flex-shrink-0 ${navTextColor}`}>
+          <Link to="/" className={`flex items-center gap-2.5 text-2xl tracking-tighter select-none group order-1 md:order-1 flex-shrink-0 ${navTextColor}`}>
             <img
               src="/logo.svg"
               alt="ZenCart"
@@ -116,7 +116,7 @@ export const Navbar = () => {
           </Link>
 
           {/* Search Bar */}
-          <div className={`${isMobileSearchOpen ? 'flex' : 'hidden md:flex'} w-full order-3 md:order-none md:flex-1 md:max-w-md md:mx-12 relative group`}>
+          <div className={`${isMobileSearchOpen ? 'flex' : 'hidden md:flex'} w-full order-3 md:order-2 md:flex-1 md:max-w-md md:mx-12 relative group`}>
             <Search className={`absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 transition-colors ${navMutedColor} group-focus-within:text-black`} />
             <input 
               type="text" 
@@ -185,7 +185,7 @@ export const Navbar = () => {
           </div>
 
           {/* Icons & Actions */}
-          <div className="flex items-center gap-2 md:gap-8 order-2 md:order-none">
+          <div className="flex items-center gap-2 md:gap-8 order-2 md:order-3">
             <nav className={`hidden md:flex items-center gap-8 text-[10px] uppercase tracking-[0.2em]`}>
               <Link to="/products" className={`transition-colors hover:text-primary ${getNavColor('/products')} ${isActive('/products') ? 'font-black' : 'font-bold'}`}>Products</Link>
               <Link to="/wishlist" className={`relative transition-colors flex items-center gap-2 hover:text-primary ${getNavColor('/wishlist')} ${isActive('/wishlist') ? 'font-black' : 'font-bold'}`}>
