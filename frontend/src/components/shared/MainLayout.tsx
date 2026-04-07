@@ -18,7 +18,7 @@ export const MainLayout = () => {
       <Navbar />
 
       {/* Main Content Area */}
-      <main className={`flex-1 ${!isHome ? 'pt-14 lg:pt-18' : ''}`}>
+      <main className={`flex-1 pb-20 md:pb-0 ${!isHome ? 'pt-24 lg:pt-28' : ''}`}>
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}

@@ -10,7 +10,7 @@ import { motion } from 'framer-motion';
 
 export const Home = () => {
   // Fetch products for different sections
-  const { data: featuredData, isLoading: isLoadingFeatured } = useProducts({ limit: 12, sortBy: 'rating', order: 'desc' });
+  const { data: featuredData, isLoading: isLoadingFeatured } = useProducts({ limit: 10, sortBy: 'rating', order: 'desc' });
   const { data: trendingData, isLoading: isLoadingTrending } = useTrendingProducts(); // Mock or actual
   const { data: bestSellersData, isLoading: isLoadingBestSellers } = useProducts({ limit: 4, sortBy: 'numReviews', order: 'desc' });
 

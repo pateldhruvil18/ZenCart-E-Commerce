@@ -43,7 +43,7 @@ const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
   loader: () => {
-    queryClient.prefetchQuery({ queryKey: ['products', { limit: 12, sortBy: 'rating', order: 'desc' }], queryFn: () => productsService.getProducts({ limit: 12, sortBy: 'rating', order: 'desc' }) });
+    queryClient.prefetchQuery({ queryKey: ['products', { limit: 10, sortBy: 'rating', order: 'desc' }], queryFn: () => productsService.getProducts({ limit: 10, sortBy: 'rating', order: 'desc' }) });
     queryClient.prefetchQuery({ queryKey: ['products', { limit: 4, sortBy: 'numReviews', order: 'desc' }], queryFn: () => productsService.getProducts({ limit: 4, sortBy: 'numReviews', order: 'desc' }) });
   },
   component: () => <Suspense fallback={<PageLoader />}><Home /></Suspense>,
@@ -53,7 +53,7 @@ const productsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/products',
   loader: () => {
-    queryClient.prefetchQuery({ queryKey: ['products', { page: 1, limit: 12, sortBy: 'createdAt', order: 'desc' }], queryFn: () => productsService.getProducts({ page: 1, limit: 12, sortBy: 'createdAt', order: 'desc' }) });
+    queryClient.prefetchQuery({ queryKey: ['products', { page: 1, limit: 10, sortBy: 'createdAt', order: 'desc' }], queryFn: () => productsService.getProducts({ page: 1, limit: 10, sortBy: 'createdAt', order: 'desc' }) });
   },
   component: () => (
     <div className="section py-8">
