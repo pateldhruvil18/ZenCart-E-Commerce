@@ -1,4 +1,4 @@
-import { Store, Instagram, Twitter, Facebook } from 'lucide-react';
+import { Store, Instagram, Facebook, X } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
 
 export const Footer = () => {
@@ -17,7 +17,7 @@ export const Footer = () => {
           </p>
           <div className="flex gap-4">
             <a href="https://instagram.com" target="_blank" rel="noreferrer" className="w-10 h-10 border border-border rounded-xl flex items-center justify-center hover:bg-black hover:text-white transition-all"><Instagram className="w-4 h-4" /></a>
-            <a href="https://twitter.com" target="_blank" rel="noreferrer" className="w-10 h-10 border border-border rounded-xl flex items-center justify-center hover:bg-black hover:text-white transition-all"><Twitter className="w-4 h-4" /></a>
+            <a href="https://twitter.com" target="_blank" rel="noreferrer" className="w-10 h-10 border border-border rounded-xl flex items-center justify-center hover:bg-black hover:text-white transition-all"><X className="w-4 h-4" /></a>
             <a href="https://facebook.com" target="_blank" rel="noreferrer" className="w-10 h-10 border border-border rounded-xl flex items-center justify-center hover:bg-black hover:text-white transition-all"><Facebook className="w-4 h-4" /></a>
           </div>
         </div>

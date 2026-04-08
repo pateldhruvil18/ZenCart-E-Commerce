@@ -25,7 +25,7 @@ export const AdminOverview = ({ setTab }: { setTab: (t: string) => void }) => {
             </div>
             <div>
               <p className="text-[10px] uppercase font-black tracking-widest text-muted-foreground mb-1">{stat.title}</p>
-              <h3 className="text-3xl font-black tracking-tighter">{stat.value}</h3>
+              <h3 className="text-2xl font-black tracking-tighter">{stat.value}</h3>
             </div>
           </div>
         ))}

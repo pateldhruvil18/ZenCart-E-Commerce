@@ -292,7 +292,7 @@ export const Navbar = () => {
                 <div className="flex items-center gap-2 md:gap-5">
                   <Link to="/login" className={`hidden md:flex text-[10px] font-black uppercase tracking-[0.2em] transition-colors items-center ${navMutedColor} hover:text-primary`}>Login</Link>
                   <Link to="/register" className={`h-9 px-4 md:h-11 md:px-8 text-center rounded-xl text-[10px] font-black uppercase tracking-[0.1em] md:tracking-[0.2em] flex items-center justify-center transition-all active:scale-95 md:shadow-xl ${(isHome && !isScrolled) ? 'bg-white text-black hover:bg-white/90 shadow-white/5' : 'bg-black text-white md:hover:bg-slate-800 shadow-slate-200/50'}`}>
-                    Login / Join
+                    Join
                   </Link>
                 </div>
               )}
