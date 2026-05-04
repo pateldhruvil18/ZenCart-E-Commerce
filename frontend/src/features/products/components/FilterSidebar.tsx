@@ -27,7 +27,7 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
   resetFilters
 }) => {
   return (
-    <div className="w-full lg:w-64 flex-shrink-0 space-y-10 pr-8">
+    <div className="w-full space-y-8">
       <div className="flex items-center justify-between">
         <h3 className="font-black uppercase tracking-widest text-sm flex items-center gap-2">
           <SlidersHorizontal className="w-4 h-4" /> Filters

@@ -110,13 +110,12 @@ export const ProductListing = () => {
       </button>
 
       {/* Two-panel layout with independent scroll */}
-      <div className="flex flex-col lg:flex-row gap-12" style={{ height: 'calc(100vh - 280px)', minHeight: '600px' }}>
+      <div className="flex flex-col lg:flex-row gap-6 relative" style={{ height: 'calc(100vh - 280px)', minHeight: '600px' }}>
 
         {/* ── Sidebar (independently scrollable) ── */}
         <div
           ref={sidebarRef}
-          className={`lg:block ${isMobileFiltersOpen ? 'block' : 'hidden'} w-full lg:w-64 shrink-0 overflow-y-auto pr-1`}
-          style={{ scrollbarWidth: 'thin' }}
+          className={`lg:block ${isMobileFiltersOpen ? 'block' : 'hidden'} w-full lg:w-[280px] shrink-0 overflow-y-auto overflow-x-hidden scrollbar-hide border border-border rounded-3xl p-6 relative`}
         >
           <FilterSidebar 
             categories={CATEGORIES}
@@ -135,8 +134,7 @@ export const ProductListing = () => {
         {/* ── Main Product Area (independently scrollable) ── */}
         <div
           ref={productRef}
-          className="flex-1 overflow-y-auto"
-          style={{ scrollbarWidth: 'thin' }}
+          className="flex-1 overflow-y-auto scrollbar-hide border border-border rounded-3xl p-6 lg:p-10 relative"
         >
           <div className="space-y-8 pb-8">
             {/* Top Bar for Search & Sort */}
