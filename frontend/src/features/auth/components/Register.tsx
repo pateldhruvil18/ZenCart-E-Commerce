@@ -22,7 +22,7 @@ export const Register = () => {
         setRegisteredEmail(formData.email);
       },
       onError: (err: any) =>
-        setError(err?.response?.data?.message || err.message || 'Registration failed'),
+        setError(err?.message || 'Registration failed'),
     });
   };
 

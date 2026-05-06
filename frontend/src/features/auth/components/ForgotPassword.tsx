@@ -24,7 +24,7 @@ export const ForgotPassword = () => {
       setStep(2);
       toast.success('Reset OTP sent to your email');
     } catch (err: any) {
-      setError(err?.response?.data?.message || err.message || 'Failed to send reset email.');
+      setError(err?.message || 'Failed to send reset email.');
     } finally {
       setIsLoading(false);
     }
@@ -40,7 +40,7 @@ export const ForgotPassword = () => {
       toast.success('Password reset successfully! Please login.');
       navigate({ to: '/login' });
     } catch (err: any) {
-      setError(err?.response?.data?.message || err.message || 'Failed to reset password.');
+      setError(err?.message || 'Failed to reset password.');
     } finally {
       setIsLoading(false);
     }

@@ -41,12 +41,17 @@ const register = async (req, res) => {
 
     const html = await ejs.renderFile(templatePath('otp-verification.ejs'), { name, otp });
     
-    // Send mail in background to avoid request timeout on Render
-    sendMail(
-      email,
-      'Your OTP - E-Commerce Store Email Verification',
-      html
-    ).catch(err => console.error('Registration email failed:', err.message));
+    // Send OTP email — await so we can report failures to the user
+    try {
+      await sendMail(
+        email,
+        'Your OTP - E-Commerce Store Email Verification',
+        html
+      );
+    } catch (mailErr) {
+      console.error('Registration email failed:', mailErr.message);
+      return handleError(res, buildErrorObject(500, `Email Error: ${mailErr.message}`));
+    }
 
     return buildResponse(res, 201,
       { id: user._id, email: user.email },
@@ -114,7 +119,14 @@ const resendOTP = async (req, res) => {
     await user.save();
 
     const html = await ejs.renderFile(templatePath('otp-verification.ejs'), { name: user.name, otp });
-    await sendMail(email, 'Resend OTP - E-Commerce Store', html);
+    
+    try {
+      await sendMail(email, 'Resend OTP - E-Commerce Store', html);
+    } catch (mailErr) {
+      console.error('Resend OTP email failed:', mailErr.message);
+      return handleError(res, buildErrorObject(500, `Email Error: ${mailErr.message}`));
+    }
+
     return buildResponse(res, 200, null, 'A new OTP has been sent to your email.');
   } catch (err) {
     return handleError(res, err);
@@ -213,7 +225,14 @@ const forgotPassword = async (req, res) => {
     await user.save();
 
     const html = await ejs.renderFile(templatePath('forgot-password.ejs'), { otp });
-    await sendMail(email, 'Password Reset OTP - E-Commerce Store', html);
+    
+    try {
+      await sendMail(email, 'Password Reset OTP - E-Commerce Store', html);
+    } catch (mailErr) {
+      console.error('Forgot password email failed:', mailErr.message);
+      // We still return 200 to avoid email enumeration, but log the error
+    }
+
     return buildResponse(res, 200, null, 'If that email exists, a reset OTP has been sent.');
   } catch (err) {
     return handleError(res, err);

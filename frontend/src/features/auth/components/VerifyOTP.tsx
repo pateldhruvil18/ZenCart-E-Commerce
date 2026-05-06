@@ -54,7 +54,7 @@ export const VerifyOTP: React.FC<VerifyOTPProps> = ({ email, onBack }) => {
       {
         onSuccess: () => navigate({ to: '/' }),
         onError: (err: any) =>
-          setError(err?.response?.data?.message || 'Invalid OTP. Please try again.'),
+          setError(err?.message || 'Invalid OTP. Please try again.'),
       }
     );
   };
@@ -66,7 +66,7 @@ export const VerifyOTP: React.FC<VerifyOTPProps> = ({ email, onBack }) => {
       { email },
       {
         onSuccess: () => setResendCountdown(60),
-        onError: (err: any) => setError(err?.response?.data?.message || 'Failed to resend OTP'),
+        onError: (err: any) => setError(err?.message || 'Failed to resend OTP'),
       }
     );
   };
